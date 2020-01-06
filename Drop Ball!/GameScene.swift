@@ -33,6 +33,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var location = CGPoint(x: 0, y: 0)
     
+
+    let success = Bundle.main.path(forResource: "Success6", ofType: "wav")
+    let failure = Bundle.main.path(forResource: "Failure", ofType: "wav")
+    let hit = Bundle.main.path(forResource: "Ping Pong Hit", ofType: "wav")
+    
     override func didMove(to view: SKView) {
         
         print("didMove(to view: SKView) ")
@@ -74,11 +79,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func playSound(fileName: String) {
         
-        let sound = Bundle.main.path(forResource: fileName, ofType: "wav")
-        
         do {
-            audioPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: sound!))
-            audioPlayer.prepareToPlay()
+            if (fileName == "Success6") {
+                audioPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: success!))
+            } else if (fileName == "Failure") {
+                audioPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: failure!))
+            } else if (fileName == "Ping Pong Hit") {
+                audioPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: hit!))
+            }
             
             DispatchQueue.global().async {
                 audioPlayer.play()
@@ -363,6 +371,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
+        
+        audioPlayer.prepareToPlay()
         
         let collision: UInt32 = (contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask)
         audioPlayer.prepareToPlay()
